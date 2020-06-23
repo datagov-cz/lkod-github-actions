@@ -1,0 +1,12 @@
+name: push-annotations
+description: Push annotations from given file to GitHub repository.
+runs:
+  using: node12
+  main: ./dist/index.js
+inputs:
+  input-file:
+    description: Input path.
+    required: true
+  filter-json:
+    description: Configuration in JSON.
+    required: true

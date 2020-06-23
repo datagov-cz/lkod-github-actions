@@ -1,0 +1,12 @@
+name: validate-json-syntax
+description: Performs syntax validation of Json files.
+runs:
+  using: node12
+  main: ./dist/index.js
+inputs:
+  input-file:
+    description: Path to file with with files to validate.
+    required: true
+  output-file:
+    description: Where to store annotations.
+    required: true

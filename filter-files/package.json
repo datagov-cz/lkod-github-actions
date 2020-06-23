@@ -1,0 +1,16 @@
+{
+  "name": "filter-files",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "ncc build index.js -o dist"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.2.4",
+    "@zeit/ncc": "^0.22.3"
+  }
+}

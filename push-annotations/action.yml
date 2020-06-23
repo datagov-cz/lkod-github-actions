@@ -1,0 +1,9 @@
+name: push-annotations
+description: Push annotations from given file to GitHub repository.
+runs:
+  using: node12
+  main: ./dist/index.js
+inputs:
+  annotations-file:
+    description: Path to file with annotations.
+    required: true

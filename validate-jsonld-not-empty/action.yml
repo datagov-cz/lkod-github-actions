@@ -1,0 +1,16 @@
+name: validate-jsonld-not-empty
+description: Performs syntax validation of Json files.
+runs:
+  using: node12
+  main: ./dist/index.js
+inputs:
+  ignore-invalid-syntax:
+    description: If true ignore syntax-errors.
+    required: false
+    default: true
+  input-file:
+    description: Path to file with with files to validate.
+    required: true
+  output-file:
+    description: Where to store annotations.
+    required: true

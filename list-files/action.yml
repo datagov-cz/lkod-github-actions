@@ -1,0 +1,12 @@
+name: list-files
+description: List all files in given directory.
+runs:
+  using: node12
+  main: ./dist/index.js
+inputs:
+  directory:
+    description: Input directory, use $GITHUB_WORKSPACE by default.
+    required: false
+  output-json-file:
+    description: Output file, use $HOME/files.json by default.
+    required: false
