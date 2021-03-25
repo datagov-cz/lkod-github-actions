@@ -24,7 +24,7 @@ const FILES_TO_IGNORE = [".git"];
   console.info("Searching for files in", datasetDirectory);
   const files = listFilesRelativeToDirectory(
     datasetDirectory,
-    (ref) => FILES_TO_IGNORE.includes(ref.fileName));
+    (ref) => !FILES_TO_IGNORE.includes(ref.fileName));
   console.info("Number of detected files", files.length);
 
   const datasets = collectDatasetIris(files);
@@ -55,7 +55,6 @@ function listFilesRelativeToDirectory(
   filterFunction: ShouldIgnore = () => false,
   relativeDirectory = "./"
 ) {
-  console.info("Searching", directory);
   let result = [];
   for (const fileName of fileSystem.readdirSync(directory)) {
     const reference: FileReference = {
@@ -63,7 +62,6 @@ function listFilesRelativeToDirectory(
       "fullPath": path.join(directory, fileName),
       "relativePath": path.join(relativeDirectory, fileName),
     };
-    console.info("New file", fileName);
     if (!filterFunction(reference)) {
       continue;
     }

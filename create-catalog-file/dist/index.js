@@ -23,7 +23,7 @@ const FILES_TO_IGNORE = [".git"];
     const catalog = readJsonFile(catalogTemplatePath);
     const datasetDirectory = getInput("datasets-root");
     console.info("Searching for files in", datasetDirectory);
-    const files = listFilesRelativeToDirectory(datasetDirectory, (ref) => FILES_TO_IGNORE.includes(ref.fileName));
+    const files = listFilesRelativeToDirectory(datasetDirectory, (ref) => !FILES_TO_IGNORE.includes(ref.fileName));
     console.info("Number of detected files", files.length);
     const datasets = collectDatasetIris(files);
     console.info("Number of detected datasets", datasets.length);
@@ -45,7 +45,6 @@ function getInput(name) {
     return value.trim();
 }
 function listFilesRelativeToDirectory(directory, filterFunction = () => false, relativeDirectory = "./") {
-    console.info("Searching", directory);
     let result = [];
     for (const fileName of external_fs_namespaceObject.readdirSync(directory)) {
         const reference = {
@@ -53,7 +52,6 @@ function listFilesRelativeToDirectory(directory, filterFunction = () => false, r
             "fullPath": external_path_namespaceObject.join(directory, fileName),
             "relativePath": external_path_namespaceObject.join(relativeDirectory, fileName),
         };
-        console.info("New file", fileName);
         if (!filterFunction(reference)) {
             continue;
         }
