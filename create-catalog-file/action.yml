@@ -1,0 +1,15 @@
+name: create-catalog-file
+description: Create catalog file.
+runs:
+  using: node12
+  main: ./dist/index.js
+inputs:
+  datasets-root:
+    description: Root directory with datasets.
+    required: true
+  catalog-template-file:
+    description: Path to catalog template file.
+    required: true
+  filter-output-file:
+    description: Path to the output file.
+    required: true
