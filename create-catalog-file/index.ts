@@ -16,18 +16,20 @@ type ShouldIgnore = (file: FileReference) => boolean;
 const FILES_TO_IGNORE = [".git"];
 
 (function () {
-  const root = process.env["HOME"] + "/";
-  const catalogTemplatePath = root + getInput("catalog-template-file");
+  const catalogTemplatePath = getInput("catalog-template-file");
   const catalog = readJsonFile(catalogTemplatePath);
 
-  const datasetDirectory = root + getInput("datasets-root");
+  const datasetDirectory = getInput("datasets-root");
   const files = listFilesRelativeToDirectory(
     datasetDirectory,
     (ref) => FILES_TO_IGNORE.includes(ref.fileName));
   const datasets = collectDatasetIris(files);
-  catalog["datová_sada"] = datasets;
+  catalog["datová_sada"] = [
+    ...(catalog["datová_sada"] || []),
+    ...datasets
+  ];
 
-  const catalogOutputPath = root + getInput("filter-output-file");
+  const catalogOutputPath = getInput("filter-output-file");
   writeJsonFile(catalogOutputPath, catalog);
 })();
 
@@ -68,7 +70,8 @@ function listFilesRelativeToDirectory(
 }
 
 function readJsonFile(path) {
-  return fileSystem.readFileSync(path).toJSON();
+  const content = fileSystem.readFileSync(path, "utf8");
+  return JSON.parse(content);
 }
 
 function collectDatasetIris(references: FileReference[]): string[] {
@@ -78,6 +81,12 @@ function collectDatasetIris(references: FileReference[]): string[] {
       continue;
     }
     const content = readJsonFile(reference.fullPath);
+    if (content["typ"] !== "Datová sada") {
+      console.log("This is not a dataset.", reference.relativePath);
+      continue;
+    }
+    console.log(
+      "Adding dataset", content["iri"], "from", reference.relativePath);
     result.add(content["iri"]);
   }
   return [...result];
