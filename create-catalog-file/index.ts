@@ -21,7 +21,7 @@ const FILES_TO_IGNORE = [".git"];
   const catalog = readJsonFile(catalogTemplatePath);
 
   const datasetDirectory = getInput("datasets-root");
-  console.info("Searching for files in", catalogTemplatePath);
+  console.info("Searching for files in", datasetDirectory);
   const files = listFilesRelativeToDirectory(
     datasetDirectory,
     (ref) => FILES_TO_IGNORE.includes(ref.fileName));
@@ -55,6 +55,7 @@ function listFilesRelativeToDirectory(
   filterFunction: ShouldIgnore = () => false,
   relativeDirectory = "./"
 ) {
+  console.info("Searching", directory);
   let result = [];
   for (const fileName of fileSystem.readdirSync(directory)) {
     const reference: FileReference = {
@@ -62,6 +63,7 @@ function listFilesRelativeToDirectory(
       "fullPath": path.join(directory, fileName),
       "relativePath": path.join(relativeDirectory, fileName),
     };
+    console.info("New file", fileName);
     if (!filterFunction(reference)) {
       continue;
     }
