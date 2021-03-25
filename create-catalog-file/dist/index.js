@@ -19,15 +19,20 @@ const external_fs_namespaceObject = require("fs");;
 const FILES_TO_IGNORE = [".git"];
 (function () {
     const catalogTemplatePath = getInput("catalog-template-file");
+    console.info("Loading template from", catalogTemplatePath);
     const catalog = readJsonFile(catalogTemplatePath);
     const datasetDirectory = getInput("datasets-root");
+    console.info("Searching for files in", catalogTemplatePath);
     const files = listFilesRelativeToDirectory(datasetDirectory, (ref) => FILES_TO_IGNORE.includes(ref.fileName));
+    console.info("Number of detected files", files.length);
     const datasets = collectDatasetIris(files);
+    console.info("Number of detected datasets", datasets.length);
     catalog["datová_sada"] = [
         ...(catalog["datová_sada"] || []),
         ...datasets
     ];
     const catalogOutputPath = getInput("filter-output-file");
+    console.info("Saving catalog file to", catalogOutputPath);
     writeJsonFile(catalogOutputPath, catalog);
 })();
 // From "@actions/core".
@@ -71,10 +76,10 @@ function collectDatasetIris(references) {
         }
         const content = readJsonFile(reference.fullPath);
         if (content["typ"] !== "Datová sada") {
-            console.log("This is not a dataset.", reference.relativePath);
+            console.info("This is not a dataset.", reference.relativePath);
             continue;
         }
-        console.log("Adding dataset", content["iri"], "from", reference.relativePath);
+        console.info("Adding dataset", content["iri"], "from", reference.relativePath);
         result.add(content["iri"]);
     }
     return [...result];
