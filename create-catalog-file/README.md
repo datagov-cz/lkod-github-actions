@@ -26,7 +26,7 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
     - name: Create catalog file
-      uses: skodapetr/lkod-mvcr/create-catalog-file@master
+      uses: opendata-mvcr/lkod-github-actions/create-catalog-file@master
       with: 
        datasets-root: ${{ github.workspace }}
        catalog-template-file: ${{ github.workspace }}/catalog-template.jsonld
