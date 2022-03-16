@@ -521,7 +521,7 @@ async function submitReport(batches, token) {
       "check_run_id": checkRunId,
       "status": "completed",
       "output": {
-        "title": `Check Run: ${check_run}`,
+        "title": `Check Run: ${checkRunId}`,
         "summary": `${batch.length} errors(s) found`,
         "annotations": batch,
       },
