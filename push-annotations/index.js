@@ -140,6 +140,7 @@ async function updateCheck(
       "status": "completed",
       "conclusion": conclusion,
       "output": {
+        // This is visible in label in check list.
         "title": `Check Run ${checkRunId}`,
         "summary": summary,
         "annotations": annotations,
