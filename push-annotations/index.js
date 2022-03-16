@@ -1,3 +1,6 @@
+// Relevant repositories:
+// https://github.com/yuzutech/annotations-action
+
 const fileSystem = require("fs");
 const readline = require("readline");
 const core = require("@actions/core");
@@ -14,7 +17,8 @@ const github = require("@actions/github");
 
 async function run(inputFile, token) {
   const annotations = await loadAnnotationFile(inputFile);
-  await submitReport(annotations, token);
+  const batches = createBatches(50, annotations)
+  await submitReport(batches, token);
   checkForFailures(annotations);
 }
 
@@ -30,43 +34,6 @@ async function loadAnnotationFile(path) {
   return result;
 }
 
-async function submitReport(annotations, token) {
-  const octokit = github.getOctokit(token);
-  const context = github.context;
-  const ref = getSha(context);
-  if (!ref) {
-    core.error(`Context: ${JSON.stringify(context, null, 2)}`);
-    return process.exit(1);
-  }
-  const check_run = github.context.workflow;
-  const {data: {check_runs}} = await octokit.checks.listForRef({
-    ...context.repo,
-    ref,
-    check_run,
-    status: "in_progress"
-  });
-  const check_run_id = check_runs[0].id;
-  for (const reports of createBatches(50, annotations)) {
-    await octokit.checks.update({
-      ...context.repo,
-      check_run_id,
-      output: {
-        title: `${check_run} Check Run`,
-        summary: `${reports.length} errors(s) found`,
-        annotations: reports
-      }
-    });
-  }
-}
-
-const getSha = (context) => {
-  if (context.eventName === "pull_request") {
-    return context.payload.pull_request.head.sha || context.payload.after;
-  } else {
-    return context.sha;
-  }
-};
-
 const createBatches = (size, inputs) => inputs.reduce((batches, input) => {
   const current = batches[batches.length - 1];
   current.push(input);
@@ -75,6 +42,47 @@ const createBatches = (size, inputs) => inputs.reduce((batches, input) => {
   }
   return batches;
 }, [[]]);
+
+async function submitReport(batches, token) {
+  const octokit = github.getOctokit(token);
+  const checkRunId = await createCheck(octokit, github);
+  for (const batch of batches) {
+    await octokit.checks.update({
+      "owner": github.context.repo.owner,
+      "repo": github.context.repo.repo,
+      "check_run_id": checkRunId,
+      "status": "completed",
+      "output": {
+        "title": `${check_run} Check Run`,
+        "summary": `${batch.length} errors(s) found`,
+        "annotations": batch,
+      },
+    });
+  }
+}
+
+/**
+ * Create a check that we can use to add annotation into.
+ */
+const createCheck = async (octokit, github) => {
+  const headRef = getHeadRef(github.context);
+  const {data: {id: checkRunId}} = await octokit.checks.create({
+    "owner": github.context.repo.owner,
+    "repo": github.context.repo.repo,
+    "name": github.context.workflow,
+    "head_sha": headRef,
+    "status": "in_progress"
+  });
+  return checkRunId;
+};
+
+const getHeadRef = (context) => {
+  if (context.payload.pull_request) {
+    return context.payload.pull_request.head.sha;
+  } else {
+    return context.sha;
+  }
+};
 
 function checkForFailures(annotations) {
   let failureDetected = false;
