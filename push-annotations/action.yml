@@ -5,5 +5,8 @@ runs:
   main: ./dist/index.js
 inputs:
   annotations-file:
-    description: Path to file with annotations.
+    description: Path to JSON file with annotations.
     required: true
+  title:
+    description: 'Title of the check'
+    required: false
