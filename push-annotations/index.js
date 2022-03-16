@@ -83,8 +83,8 @@ function collectLevels(annotations) {
  * Create a check that we can use to add annotation into.
  */
 async function createCheck(octokit, userTitle) {
-  const { owner, repo, workflow } = github.context.repo;
-  const name = isEmpty(userTitle) ? workflow : userTitle;
+  const { owner, repo } = github.context.repo;
+  const name = isEmpty(userTitle) ? github.context.workflow : userTitle;
   const headSha = getHeadRef(github.context);
   try {
     const { data: { id: checkRunId } } = await octokit.checks.create({
