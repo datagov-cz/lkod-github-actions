@@ -521,7 +521,7 @@ async function submitReport(batches, token) {
       "check_run_id": checkRunId,
       "status": "completed",
       "output": {
-        "title": `${check_run} Check Run`,
+        "title": `Check Run: ${check_run}`,
         "summary": `${batch.length} errors(s) found`,
         "annotations": batch,
       },
@@ -539,7 +539,7 @@ const createCheck = async (octokit, github) => {
     "repo": github.context.repo.repo,
     "name": github.context.workflow,
     "head_sha": headRef,
-    "status": "in_progress"
+    "status": "in_progress",
   });
   return checkRunId;
 };
