@@ -31,7 +31,6 @@ const FILES_TO_IGNORE = [".git"];
   console.info("Number of detected datasets", datasets.length);
 
   catalog["datová_sada"] = [
-    ...(catalog["datová_sada"] || []),
     ...datasets
   ];
 
