@@ -1,12 +1,12 @@
 name: push-annotations
 description: Push annotations from given file to GitHub repository.
 runs:
-  using: node12
+  using: node16
   main: ./dist/index.js
 inputs:
   annotations-file:
     description: Path to JSON file with annotations.
     required: true
   title:
-    description: 'Title of the check'
+    description: Title of the check.
     required: false

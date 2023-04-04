@@ -1,10 +1,8 @@
 # Github Actions pro validaci Lokálního katalogu otevřených dat (LKOD) na GitHubu
-Tento repozitář obsahuje sadu Github Actions, jenž je možné použít
-pro validaci LKODu na GitHubu.
+Tento repozitář obsahuje sadu Github Actions, jenž je možné použít pro validaci LKODu na GitHubu.
 
 ## Použití
-Následující příklad popisuje workflow, jenž 
-využívá akce z tohoto repozitáře k validaci:
+Následující příklad popisuje workflow, jenž využívá akce z tohoto repozitáře k validaci:
  * *.json a *.jsonld soubory jsou syntakticky validní
  * *.jsonld obrahují alespoň jednu trojici 
 

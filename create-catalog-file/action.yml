@@ -1,7 +1,7 @@
 name: create-catalog-file
 description: Create catalog file.
 runs:
-  using: node12
+  using: node16
   main: ./dist/index.js
 inputs:
   datasets-root:
