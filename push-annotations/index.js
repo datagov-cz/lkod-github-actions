@@ -11,6 +11,13 @@ const LEVEL_NOTICE = "notice";
 const LEVEL_WARNING = "warning";
 const LEVEL_FAILURE = "failure";
 
+class GitHubApiError extends Error {
+  constructor (message) {
+    super(message)
+    this.name = 'GitHubApiError'
+  }
+}
+
 (async function () {
   try {
     await main();
@@ -87,7 +94,7 @@ async function createCheck(octokit, userTitle) {
   const name = isEmpty(userTitle) ? github.context.workflow : userTitle;
   const headSha = getHeadRef(github.context);
   try {
-    const { data: { id: checkRunId } } = await octokit.checks.create({
+    const { data: { id: checkRunId } } = await octokit.rest.checks.create({
       "owner": owner,
       "repo": repo,
       "name": name,
@@ -99,7 +106,7 @@ async function createCheck(octokit, userTitle) {
     throw new Error(
       `Can't create a check to '${owner}/${repo}:${headSha}' - cause: ${err}`);
   }
-};
+}
 
 function isEmpty(value) {
   return value === null || value === undefined || value === "";
@@ -111,7 +118,7 @@ function getHeadRef(context) {
   } else {
     return context.sha;
   }
-};
+}
 
 function createConclusion(levels) {
   if (levels[LEVEL_FAILURE] > 0) {
@@ -133,7 +140,7 @@ async function updateCheck(
   octokit, checkRunId, conclusion, summary, annotations,
 ) {
   try {
-    await octokit.checks.update({
+    await octokit.rest.checks.update({
       "owner": github.context.repo.owner,
       "repo": github.context.repo.repo,
       "check_run_id": checkRunId,
